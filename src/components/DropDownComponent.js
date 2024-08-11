@@ -1,9 +1,13 @@
 import Select from "react-select";
 
-const DropDownComponent = ({options}) => {
+const DropDownComponent = ({ options, placeholder }) => {
   return (
     <div>
-      <Select className="w-38" options={options} placeholder="Hometown" />
+      <Select
+        className="w-full sm:38"
+        options={options}
+        placeholder={placeholder}
+      />
     </div>
   );
 };

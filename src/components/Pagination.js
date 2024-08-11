@@ -10,7 +10,6 @@ const Pagination = ({ totalCharacters, setPageNumber }) => {
   return (
     <div className="pb-12">
       <ul className="flex items-center justify-center">
-        <li className=""> Previous</li>
         {Array.from({ length: value }, (_, index) => index + 1).map((index) => (
           <button
             className="list-none border p-3 cursor-pointer text-white bg-black m-2"
@@ -21,7 +20,6 @@ const Pagination = ({ totalCharacters, setPageNumber }) => {
             {index}
           </button>
         ))}
-        <li>Next</li>
       </ul>
     </div>
   );

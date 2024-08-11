@@ -5,8 +5,8 @@ import PersonCard from "./PersonCard";
 import Header from "./Header";
 import { fetchAllPeople } from "../store/slices/characterDataSlice";
 import Shimmer from "./Shimmer";
-import Select from "react-select";
 import DropDownComponent from "./DropDownComponent";
+import NoResultFound from "./NoResultFound";
 
 const Home = () => {
   const [searchState, setSearchState] = useState({
@@ -21,7 +21,6 @@ const Home = () => {
   }, [dispatch]);
 
   const { data, isLoading } = useSelector((store) => store.characterData);
-
   const pageNumber = useSelector((store) => store.pagination.pageNumber);
 
   const handleSearch = () => {
@@ -60,21 +59,21 @@ const Home = () => {
     <div className="min-h-screen">
       <Header />
 
-      {/* Flex container to align both sections horizontally */}
-      <div className="flex justify-between pt-32 pb-16 mb-6 px-12">
+      {/* Main content container */}
+      <div className="w-11/12 mx-auto flex flex-col md:flex-row justify-between pt-16 pb-16 mb-6">
         {/* Search and Filter Container */}
-        <div className="">
-          <div className="">
+        <div className="flex flex-col mb-6 md:mb-0">
+          <div className="flex flex-col sm:flex-row items-center">
             <input
               value={searchState.searchText}
-              className="py-2 px-6 rounded-3xl w-[20rem] border-2 border-black"
+              className="py-2 px-6 mb-4 sm:mb-0 sm:mr-4 rounded-3xl w-[20rem] border-2 border-black"
               placeholder="Search Character"
               onChange={(e) =>
                 setSearchState({ ...searchState, searchText: e.target.value })
               }
             />
             <button
-              className="py-2 px-6 ml-4 rounded-3xl bg-black text-white"
+              className="py-2 px-6 rounded-3xl bg-black text-white"
               onClick={handleSearch}
             >
               Search
@@ -97,19 +96,22 @@ const Home = () => {
         </div>
 
         {/* Advanced Filters Container */}
-        <div className="flex items-center">
-          <h1 className="font-semibold px-4">Advance Filters</h1>
-          <div className="flex gap-2">
-            <DropDownComponent options={options} />
-            <Select className="w-38" options={options} placeholder="Species" />
-            <Select className="w-38" options={options} placeholder="Films" />
+        <div className="flex flex-col md:flex-row items-center gap-2 justify-center">
+          <h1 className="font-semibold px-4 text-center md:text-left">
+            Advance Filters
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <DropDownComponent options={options} placeholder={"Hometown"} />
+            <DropDownComponent options={options} placeholder={"Species"} />
+            <DropDownComponent options={options} placeholder={"Films"} />
           </div>
         </div>
       </div>
 
+      {/* Character grid and pagination */}
       <div>
         <div className="flex justify-center">
-          <div className="grid grid-cols-5 pb-12 gap-12 group mx-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 pb-12 gap-6 sm:gap-8 md:gap-10 group mx-6">
             {isLoading
               ? Array.from({ length: 10 }).map((_, index) => (
                   <Shimmer key={index} />
@@ -129,9 +131,7 @@ const Home = () => {
           </div>
         </div>
         {paginatedData.length === 0 ? (
-          <h1 className="text-center font-bold text-3xl">
-            No Records Found !!
-          </h1>
+          <NoResultFound />
         ) : (
           <Pagination totalCharacters={filteredData.length} />
         )}
