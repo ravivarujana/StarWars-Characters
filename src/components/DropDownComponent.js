@@ -29,7 +29,6 @@ const DropDownComponent = ({
         options={options}
         placeholder={placeholder}
         onChange={onChange}
-        isClearable
         onMenuOpen={handleMenuOpen} // Trigger lazy loading when menu opens
       />
     </div>

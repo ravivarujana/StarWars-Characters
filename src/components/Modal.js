@@ -21,20 +21,38 @@ const Modal = ({ setShowModal, index }) => {
             ×
           </button>
         </div>
-        <div className="p-6">
+        <div className="px-12 py-6">
           <div className="grid grid-cols-2 gap-4 font-semibold">
             <ul className="text-lg space-y-4">
-              <li>BirthYear : {birth_year}</li>
-              <li>Mass : {mass}</li>
-              <li>Height : {height}</li>
-              <li>Created : {dayjs(created).format("DD-MM-YYYY")}</li>
-              <li>Number of Films : {films.length}</li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">BirthYear:</span> {birth_year}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Mass:</span> {mass}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Height:</span> {height}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Created:</span> {dayjs(created).format("DD-MM-YYYY")}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Number of Films:</span> {films.length}
+              </li>
             </ul>
             <ul className="text-lg space-y-4">
-              <li>HomeWorld : {homeWorldName}</li>
-              <li>Climate : {climate}</li>
-              <li>Terrain : {terrain}</li>
-              <li>Population : {population}</li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">HomeWorld:</span> {homeWorldName}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Climate:</span> {climate}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Terrain:</span> {terrain}
+              </li>
+              <li className="bg-[#6A817F] p-2 rounded-md shadow-sm hover:bg-[#5A716F] transition-colors duration-200">
+                <span className="font-bold">Population:</span> {population}
+              </li>
             </ul>
           </div>
         </div>
