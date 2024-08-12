@@ -7,7 +7,7 @@ import { fetchAllPeople } from "../store/slices/characterDataSlice";
 import Shimmer from "./Shimmer";
 import DropDownComponent from "./DropDownComponent";
 import NoResultFound from "./NoResultFound";
-import { DROPDOWN_CONSTANTS } from "../utils/constants";
+import { DROPDOWN_CONSTANTS, OFFSET } from "../utils/constants";
 import { fetchAllSpecies } from "../store/slices/speciesSlice";
 import { fetchAllPlanets } from "../store/slices/planetSlice";
 import { fetchAllFilms } from "../store/slices/filmsSlice";
@@ -92,8 +92,8 @@ const Home = () => {
 
   // Memoized paginated data based on current page number
   const paginatedData = useMemo(() => {
-    const startIndex = (pageNumber - 1) * 10;
-    return filteredData.slice(startIndex, startIndex + 10);
+    const startIndex = (pageNumber - 1) * OFFSET;
+    return filteredData.slice(startIndex, startIndex + OFFSET);
   }, [filteredData, pageNumber]);
 
   // Select species, films, and homeworld data from Redux store

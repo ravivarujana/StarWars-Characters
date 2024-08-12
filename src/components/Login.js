@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { BUTTONS, ERRORS } from "../utils/constants";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -12,9 +13,8 @@ const Login = () => {
     try {
       await login(username, password);
       navigate("/home");
-      alert("Logged in successfully!");
     } catch (error) {
-      alert("Invalid credentials");
+      alert(ERRORS.INVALID_CREDENTIALS);
     }
   };
 
@@ -47,12 +47,8 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button
-            className="p-4 my-4 bg-white"
-            type="submit"
-            // onClick={handleRedirect}
-          >
-            Login
+          <button className="p-4 my-4 bg-white" type="submit">
+            {BUTTONS.LOGIN}
           </button>
         </form>
       </div>

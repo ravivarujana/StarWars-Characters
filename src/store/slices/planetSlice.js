@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchApiData } from "../../utils/fetchData";
+import { PLANETS_URL } from "../../utils/constants";
 
 export const fetchAllPlanets = createAsyncThunk(
   "planets/fetchAllPlanets",
   async (_, { rejectWithValue }) => {
     try {
-      const { allData, totalCount } = await fetchApiData(
-        "https://swapi.dev/api/planets"
-      );
+      const { allData, totalCount } = await fetchApiData(PLANETS_URL);
       return { allData, totalCount };
     } catch (error) {
       return rejectWithValue(error.message);
