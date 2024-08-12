@@ -11,13 +11,17 @@ import { DROPDOWN_CONSTANTS } from "../utils/constants";
 import { fetchAllSpecies } from "../store/slices/speciesSlice";
 import { fetchAllPlanets } from "../store/slices/planetSlice";
 import { fetchAllFilms } from "../store/slices/filmsSlice";
+import { createdDropDownList } from "../utils/dropDownList";
 
+// Main component for the Home page
 const Home = () => {
+  // State for search functionality
   const [searchState, setSearchState] = useState({
     searchText: "",
     lastSearchText: "",
   });
 
+  // State for filter functionality
   const [selectedFilters, setSelectedFilters] = useState({
     homeworld: null,
     species: null,
@@ -26,13 +30,18 @@ const Home = () => {
 
   const dispatch = useDispatch();
 
+  // Fetch all characters on component mount
   useEffect(() => {
     dispatch(fetchAllPeople());
   }, [dispatch]);
 
-  const { data, isLoading } = useSelector((store) => store.characterData);
+  // Select character data and loading state from Redux store
+  const { data: characters, isLoading } = useSelector(
+    (store) => store.characterData
+  );
   const pageNumber = useSelector((store) => store.pagination.pageNumber);
 
+  // Handler for search button click
   const handleSearch = () => {
     setSearchState((prev) => ({
       ...prev,
@@ -40,11 +49,13 @@ const Home = () => {
     }));
   };
 
+  // Handler for clearing all filters and search
   const handleClearFilter = () => {
     setSearchState({ searchText: "", lastSearchText: "" });
     setSelectedFilters({ homeworld: null, species: null, films: null });
   };
 
+  // Handler for changing individual filters
   const handleFilterChange = (type, selectedOption) => {
     setSelectedFilters((prev) => ({
       ...prev,
@@ -52,8 +63,9 @@ const Home = () => {
     }));
   };
 
+  // Memoized filtered data based on search and filter criteria
   const filteredData = useMemo(() => {
-    return data.filter((char) => {
+    return characters.filter((char) => {
       const matchesSearch = searchState.lastSearchText
         ? char.name
             .toLowerCase()
@@ -76,29 +88,32 @@ const Home = () => {
         matchesSearch && matchesHomeworld && matchesSpecies && matchesFilms
       );
     });
-  }, [data, searchState.lastSearchText, selectedFilters]);
+  }, [characters, searchState.lastSearchText, selectedFilters]);
 
+  // Memoized paginated data based on current page number
   const paginatedData = useMemo(() => {
     const startIndex = (pageNumber - 1) * 10;
     return filteredData.slice(startIndex, startIndex + 10);
   }, [filteredData, pageNumber]);
 
+  // Select species, films, and homeworld data from Redux store
+  const species = useSelector((store) => store.species);
+  const films = useSelector((store) => store.films);
+  const homeworld = useSelector((store) => store.planets);
+
+  // Create dropdown lists for filters
+  const speciesDropDownList = species.data
+    ? createdDropDownList(species.data)
+    : [];
+  const filmsDropDownList = films.data ? createdDropDownList(films.data) : [];
+  const homeworldDropDownList = homeworld.data
+    ? createdDropDownList(homeworld.data)
+    : [];
+
   const dropdownOptions = {
-    homeworld: [
-      { value: "https://swapi.dev/api/planets/1/", label: "Tatooine" },
-      { value: "https://swapi.dev/api/planets/2/", label: "Alderaan" },
-    ],
-    species: [
-      { value: "https://swapi.dev/api/species/1/", label: "Human" },
-      { value: "https://swapi.dev/api/species/2/", label: "Droid" },
-    ],
-    films: [
-      { value: "https://swapi.dev/api/films/1/", label: "A New Hope" },
-      {
-        value: "https://swapi.dev/api/films/2/",
-        label: "The Empire Strikes Back",
-      },
-    ],
+    homeworld: homeworldDropDownList,
+    species: speciesDropDownList,
+    films: filmsDropDownList,
   };
 
   return (
@@ -129,6 +144,7 @@ const Home = () => {
             </button>
           </div>
 
+          {/* Display active search filter */}
           {searchState.lastSearchText && (
             <div className="flex py-4">
               <div className="bg-gray-200 px-4 py-2 rounded-full flex items-center">
@@ -150,6 +166,7 @@ const Home = () => {
             Advance Filters
           </h1>
           <div className="flex flex-col sm:flex-row gap-2">
+            {/* Dropdown components for advanced filtering */}
             <DropDownComponent
               options={dropdownOptions.homeworld}
               placeholder={DROPDOWN_CONSTANTS.HOMETOWN}
@@ -176,6 +193,7 @@ const Home = () => {
       <div>
         <div className="flex justify-center">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 pb-12 gap-6 sm:gap-8 md:gap-10 group mx-6">
+            {/* Display shimmer effect while loading, otherwise show character cards */}
             {isLoading
               ? Array.from({ length: 10 }).map((_, index) => (
                   <Shimmer key={index} />
@@ -191,6 +209,7 @@ const Home = () => {
                 ))}
           </div>
         </div>
+        {/* Show "No Results Found" or Pagination based on search results */}
         {searchState.lastSearchText && paginatedData.length === 0 ? (
           <NoResultFound />
         ) : (

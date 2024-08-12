@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { useDispatch } from "react-redux";
 
+// DropDownComponent: A reusable dropdown component with lazy loading functionality
 const DropDownComponent = ({
   options,
   placeholder,
@@ -9,9 +10,12 @@ const DropDownComponent = ({
   dispatchAction,
 }) => {
   const dispatch = useDispatch();
+  // State to track if the action has been dispatched
   const [hasDispatched, setHasDispatched] = useState(false);
 
+  // Handler for when the dropdown menu opens
   const handleMenuOpen = () => {
+    // Dispatch the action only once when the menu is first opened
     if (!hasDispatched) {
       dispatch(dispatchAction());
       setHasDispatched(true);
@@ -26,7 +30,7 @@ const DropDownComponent = ({
         placeholder={placeholder}
         onChange={onChange}
         isClearable
-        onMenuOpen={handleMenuOpen}
+        onMenuOpen={handleMenuOpen} // Trigger lazy loading when menu opens
       />
     </div>
   );
