@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchApiData } from "../../utils/fetchData";
 
 export const fetchAllPlanets = createAsyncThunk(
-  "species/fetchAllPlanets",
+  "planets/fetchAllPlanets",
   async (_, { rejectWithValue }) => {
     try {
       const { allData, totalCount } = await fetchApiData(

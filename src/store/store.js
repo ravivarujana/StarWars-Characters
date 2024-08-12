@@ -3,6 +3,7 @@ import characterDataReducer from "./slices/characterDataSlice";
 import paginationReducer from "./slices/paginationReducer";
 import planetsReducer from "./slices/planetSlice";
 import speciesReducer from "./slices/speciesSlice";
+import filmsReducer from "./slices/filmsSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     pagination: paginationReducer,
     planets: planetsReducer,
     species: speciesReducer,
+    films: filmsReducer,
   },
 });
 

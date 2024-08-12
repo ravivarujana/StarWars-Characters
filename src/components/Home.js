@@ -8,6 +8,9 @@ import Shimmer from "./Shimmer";
 import DropDownComponent from "./DropDownComponent";
 import NoResultFound from "./NoResultFound";
 import { DROPDOWN_CONSTANTS } from "../utils/constants";
+import { fetchAllSpecies } from "../store/slices/speciesSlice";
+import { fetchAllPlanets } from "../store/slices/planetSlice";
+import { fetchAllFilms } from "../store/slices/filmsSlice";
 
 const Home = () => {
   const [searchState, setSearchState] = useState({
@@ -31,9 +34,9 @@ const Home = () => {
   const pageNumber = useSelector((store) => store.pagination.pageNumber);
 
   const handleSearch = () => {
-    setSearchState((prevState) => ({
-      ...prevState,
-      lastSearchText: prevState.searchText,
+    setSearchState((prev) => ({
+      ...prev,
+      lastSearchText: prev.searchText,
     }));
   };
 
@@ -43,8 +46,8 @@ const Home = () => {
   };
 
   const handleFilterChange = (type, selectedOption) => {
-    setSelectedFilters((prevFilters) => ({
-      ...prevFilters,
+    setSelectedFilters((prev) => ({
+      ...prev,
       [type]: selectedOption ? selectedOption.value : null,
     }));
   };
@@ -80,26 +83,23 @@ const Home = () => {
     return filteredData.slice(startIndex, startIndex + 10);
   }, [filteredData, pageNumber]);
 
-  const options = [
-    { value: "https://swapi.dev/api/planets/1/", label: "Tatooine" },
-    { value: "https://swapi.dev/api/planets/2/", label: "Alderaan" },
-    // Add more homeworld options as needed
-  ];
-
-  const speciesOptions = [
-    { value: "https://swapi.dev/api/species/1/", label: "Human" },
-    { value: "https://swapi.dev/api/species/2/", label: "Droid" },
-    // Add more species options as needed
-  ];
-
-  const filmsOptions = [
-    { value: "https://swapi.dev/api/films/1/", label: "A New Hope" },
-    {
-      value: "https://swapi.dev/api/films/2/",
-      label: "The Empire Strikes Back",
-    },
-    // Add more film options as needed
-  ];
+  const dropdownOptions = {
+    homeworld: [
+      { value: "https://swapi.dev/api/planets/1/", label: "Tatooine" },
+      { value: "https://swapi.dev/api/planets/2/", label: "Alderaan" },
+    ],
+    species: [
+      { value: "https://swapi.dev/api/species/1/", label: "Human" },
+      { value: "https://swapi.dev/api/species/2/", label: "Droid" },
+    ],
+    films: [
+      { value: "https://swapi.dev/api/films/1/", label: "A New Hope" },
+      {
+        value: "https://swapi.dev/api/films/2/",
+        label: "The Empire Strikes Back",
+      },
+    ],
+  };
 
   return (
     <div className="min-h-screen">
@@ -115,7 +115,10 @@ const Home = () => {
               className="py-2 px-6 mb-4 sm:mb-0 sm:mr-4 rounded-3xl w-[20rem] border-2 border-black"
               placeholder="Search Character"
               onChange={(e) =>
-                setSearchState({ ...searchState, searchText: e.target.value })
+                setSearchState((prev) => ({
+                  ...prev,
+                  searchText: e.target.value,
+                }))
               }
             />
             <button
@@ -148,19 +151,22 @@ const Home = () => {
           </h1>
           <div className="flex flex-col sm:flex-row gap-2">
             <DropDownComponent
-              options={options}
+              options={dropdownOptions.homeworld}
               placeholder={DROPDOWN_CONSTANTS.HOMETOWN}
               onChange={(option) => handleFilterChange("homeworld", option)}
+              dispatchAction={() => fetchAllPlanets()}
             />
             <DropDownComponent
-              options={speciesOptions}
+              options={dropdownOptions.species}
               placeholder={DROPDOWN_CONSTANTS.SPECIES}
               onChange={(option) => handleFilterChange("species", option)}
+              dispatchAction={() => fetchAllSpecies()}
             />
             <DropDownComponent
-              options={filmsOptions}
+              options={dropdownOptions.films}
               placeholder={DROPDOWN_CONSTANTS.FILMS}
               onChange={(option) => handleFilterChange("films", option)}
+              dispatchAction={() => fetchAllFilms()}
             />
           </div>
         </div>
@@ -175,10 +181,7 @@ const Home = () => {
                   <Shimmer key={index} />
                 ))
               : paginatedData.map((char, index) => (
-                  <div
-                    key={index}
-                    className="p-2 hover:bg-gray-500 rounded-md "
-                  >
+                  <div key={index} className="p-2 hover:bg-gray-500 rounded-md">
                     <PersonCard
                       name={char.name}
                       key={char.name}
