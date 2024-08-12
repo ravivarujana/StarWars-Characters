@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { BUTTONS } from "../utils/constants";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Header = () => {
             className="text-lg sm:text-xl cursor-pointer"
             onClick={handleLogout}
           >
-            Logout
+            {BUTTONS.LOGOUT}
           </h2>
           <img
             alt="trooper-mask"

@@ -7,11 +7,18 @@ import { fetchAllPeople } from "../store/slices/characterDataSlice";
 import Shimmer from "./Shimmer";
 import DropDownComponent from "./DropDownComponent";
 import NoResultFound from "./NoResultFound";
+import { DROPDOWN_CONSTANTS } from "../utils/constants";
 
 const Home = () => {
   const [searchState, setSearchState] = useState({
     searchText: "",
     lastSearchText: "",
+  });
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    homeworld: null,
+    species: null,
+    films: null,
   });
 
   const dispatch = useDispatch();
@@ -32,15 +39,41 @@ const Home = () => {
 
   const handleClearFilter = () => {
     setSearchState({ searchText: "", lastSearchText: "" });
+    setSelectedFilters({ homeworld: null, species: null, films: null });
+  };
+
+  const handleFilterChange = (type, selectedOption) => {
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      [type]: selectedOption ? selectedOption.value : null,
+    }));
   };
 
   const filteredData = useMemo(() => {
-    if (!searchState.lastSearchText) return data;
+    return data.filter((char) => {
+      const matchesSearch = searchState.lastSearchText
+        ? char.name
+            .toLowerCase()
+            .includes(searchState.lastSearchText.toLowerCase())
+        : true;
 
-    return data.filter((char) =>
-      char.name.toLowerCase().includes(searchState.lastSearchText.toLowerCase())
-    );
-  }, [data, searchState.lastSearchText]);
+      const matchesHomeworld = selectedFilters.homeworld
+        ? char.homeworld === selectedFilters.homeworld
+        : true;
+
+      const matchesSpecies = selectedFilters.species
+        ? char.species.includes(selectedFilters.species)
+        : true;
+
+      const matchesFilms = selectedFilters.films
+        ? char.films.includes(selectedFilters.films)
+        : true;
+
+      return (
+        matchesSearch && matchesHomeworld && matchesSpecies && matchesFilms
+      );
+    });
+  }, [data, searchState.lastSearchText, selectedFilters]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (pageNumber - 1) * 10;
@@ -48,12 +81,25 @@ const Home = () => {
   }, [filteredData, pageNumber]);
 
   const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
+    { value: "https://swapi.dev/api/planets/1/", label: "Tatooine" },
+    { value: "https://swapi.dev/api/planets/2/", label: "Alderaan" },
+    // Add more homeworld options as needed
   ];
 
-  console.log(data);
+  const speciesOptions = [
+    { value: "https://swapi.dev/api/species/1/", label: "Human" },
+    { value: "https://swapi.dev/api/species/2/", label: "Droid" },
+    // Add more species options as needed
+  ];
+
+  const filmsOptions = [
+    { value: "https://swapi.dev/api/films/1/", label: "A New Hope" },
+    {
+      value: "https://swapi.dev/api/films/2/",
+      label: "The Empire Strikes Back",
+    },
+    // Add more film options as needed
+  ];
 
   return (
     <div className="min-h-screen">
@@ -101,9 +147,21 @@ const Home = () => {
             Advance Filters
           </h1>
           <div className="flex flex-col sm:flex-row gap-2">
-            <DropDownComponent options={options} placeholder={"Hometown"} />
-            <DropDownComponent options={options} placeholder={"Species"} />
-            <DropDownComponent options={options} placeholder={"Films"} />
+            <DropDownComponent
+              options={options}
+              placeholder={DROPDOWN_CONSTANTS.HOMETOWN}
+              onChange={(option) => handleFilterChange("homeworld", option)}
+            />
+            <DropDownComponent
+              options={speciesOptions}
+              placeholder={DROPDOWN_CONSTANTS.SPECIES}
+              onChange={(option) => handleFilterChange("species", option)}
+            />
+            <DropDownComponent
+              options={filmsOptions}
+              placeholder={DROPDOWN_CONSTANTS.FILMS}
+              onChange={(option) => handleFilterChange("films", option)}
+            />
           </div>
         </div>
       </div>
@@ -130,7 +188,7 @@ const Home = () => {
                 ))}
           </div>
         </div>
-        {paginatedData.length === 0 ? (
+        {searchState.lastSearchText && paginatedData.length === 0 ? (
           <NoResultFound />
         ) : (
           <Pagination totalCharacters={filteredData.length} />

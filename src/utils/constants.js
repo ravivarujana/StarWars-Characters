@@ -9,3 +9,14 @@ export const IMG_URL = "https://picsum.photos/id/";
 // export const PERSON_IMG_URL = `${IMG_URL}`;
 
 export const OFFSET = 10;
+
+export const DROPDOWN_CONSTANTS = {
+  HOMETOWN: "Hometown",
+  SPECIES: "Species",
+  FILMS: "Films",
+};
+
+export const BUTTONS = {
+  LOGOUT: "Logout",
+  LOGIN: "Login",
+};
